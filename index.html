@@ -1,0 +1,233 @@
+<html>
+<head>
+<style>
+#vis {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 10pt;
+}
+</style>
+</head>
+<body>
+<div id="vis"></div>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+  var events = [
+
+    {"a":-4, "b":2, "c":2, "abv":"Tower", "title":"The Tower of Lightnings", "description":"Desolate tower surrounded by magical lightning. Has 2 giant fireflies for farming.", "quest":"Find the Astral Book","questDescription":"Given by the Alliance.", "npcs":"", "tiletype":"poi"},
+    {"a":-4, "b":4, "c":0, "abv":"Yas.Est.", "title":"The Yasha Estate", "description":"Peaceful and wealthy farming plantation estate. Extremely well kept and maintained. Grows lavender and wheat. Has 2 giant fireflies for farming.", "quest":"The Pact","questDescription":"Given By Gondrick. Seems like Yasha has struck a deal with a powerful spirit in a nearby swamp. Yasha for gaining nigh immortality and powers, offered his daughter to the spirit. That was 50 years ago. Gondrick has offered wealth and treasures if the daughter were to be alive and well in Yasha Estate after the month.","npcs":"Daisy - Passerby. Invited Teg to the Wild Rose Tea Shop.<br>Grenzel - Estate Guard<br>Yasha - Plantation Owner<br>Ravi - Firefly handler<br>Gondrick - Estate Guard Captain<br>The Daughter - Has been 10 year old for 50 years. Will be turning 13 upcoming month.", "tiletype":"town"},
+    {"a":-3, "b":4, "c":-1,"abv":"Gurgary","title":"Gurgary", "description":"A typical city in a 100 Kingdoms area. Relatively well off. Has a smuggling ring and a cadre of high nobles titled Zamundar, which has invited the party for a particular request, which T'horn took care of.", "quest":"","questDescription":"","npcs":"Sau Saj - Pigman Bard. Proficient in small hand percussion and mandolin.<br>Faizal - A Zamundar. Has a daughter. Recently obsessed with self adornment and beauty bordering on madness.", "tiletype":"town"},
+    {"a":-2, "b":3, "c":-1, "title":"Path to the Swamp", "description":"On crossing a bridge over a dry gorge, the party faced a lizardfolk shaman who brought a number of skeletons. The lizardfolk was slain and properly cremated/salted.<br>There is a cave where rangers of Gurgary frequent. The party was attacked by rats while resting.", "quest":"","questDescription":"","npcs":"", "tiletype":"route"},
+    {"a":-1, "b":3, "c":-2, "abv":"Swamp","title":"The Swamp", "description":"The swamp where the aligator spirit which made a pact with Yasha lives. Was in a deadlock between different entities over the control of the swamp.", "quest":"Ruler of the Swamp","questDescription":"The serpent wants to remove the aligator spirit, and the hags from the swamp to reclaim the whole of the swamp to himself.In addition, bringing something interesting to the serpent, and it will trade you with treasures","npcs":"The Ancient Serpent - Ancient snake creature<br>Agatha - Night Hag, leader of a coven of green hags. 2 Green hags were slain. She was taking part in controlling the dead gator god. Burned to crisp by Teg.<br>The Great Gator God - Wears medieval military formal attire, white khakis. Controls catfish. Has a penchant for using presidigitation as parlor tricks. Turns out, the gator god was long dead was impersonated by a hag and a catfish spirit.<br>Amos - Mercenary fighter. Limbs were amputated and was slain by the party.<br>Hirugar - Former Ranger. Met with a deity of a forest, became a new man.<br>Catfish Fiend - Took part in impersonation of the Gator God. Summons lightnings and gator things (undead or not) from varios places. Slain brutally by Marcus.", "tiletype":"poi"}
+  ];
+
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
+    width = 1920 - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
+
+  var gridHexes = generateHexMap(40, 5, width/2, height/2);
+
+  var svg = d3
+    .select("#vis")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var hexgrid = svg
+    .selectAll("g.grid")
+    .data(gridHexes)
+    .enter()
+    .append("g")
+    .attr("transform", function(hex) {
+      return "translate(" + hex.x + "," + hex.y + ")";
+    });
+
+  hexgrid
+    .append("polygon")
+    .attr("points", function(hex) { 
+      return hex.points.map(function(d){ 
+        return [d.x,d.y].join(",");}).join(" ");
+    })
+    .attr("stroke", "#b0b0b0")
+    .attr("stroke-width", "1")
+    .attr("fill", "#fefff2");
+
+  hexgrid
+    .append("text")
+    .append("tspan")
+    .attr("text-anchor", "middle")
+    .text(function(hex) {return hex.a + "," + hex.b + "," + hex.c ;});
+
+
+  //d3.json("example.hexjson", function(error, events) {
+
+    var div = d3
+      .select("body").append("div") 
+      .attr("class", "tooltip")       
+      .style("opacity", 0);
+
+    var eventHexes = generateCrossedPaths(40, width/2, height/2, events);
+
+    console.log(eventHexes);
+
+    var eventgrid = svg
+      .selectAll("g.grid")
+      .data(eventHexes)
+      .enter()
+      .append("g")
+      .attr("transform", function(hex) {
+        return "translate(" + hex.x + "," + hex.y + ")";
+      });
+
+    eventgrid
+      .append("polygon")
+      .attr("points", function(hex) { 
+        return hex.points.map(function(d){ 
+          return [d.x,d.y].join(",");}).join(" ");
+      })
+      .attr("stroke", function(d){return getTileColorStroke(d);})
+      .attr("stroke-width", "2")
+      .attr("fill", function(d){return getTileColorFill(d);})
+      .on("mouseover", function(d) { 
+        div.transition()    
+          .duration(200)    
+          .style("opacity", .9);    
+        div.html(d.title + "<br>" + d.description + "<br><br>" + d.quest + "<br>" + d.qd + "<br><br>" + d.npcs);
+      })          
+      .on("mouseout", function(d) {   
+          div.transition()    
+            .duration(500)    
+            .style("opacity", 0); 
+      });
+
+    eventgrid
+      .append("text")
+      .append("tspan")
+      .attr("text-anchor", "middle")
+      .text(function(hex) {return hex.abv ;});
+
+//});
+
+function generateCrossedPaths(hexRadius, centerX, centerY, events){
+
+  const sqrt3 = Math.sqrt(3);
+
+  let r = hexRadius;
+  var hexes = [];
+
+  for(i in events){
+
+    let event_a = events[i].a;
+    let event_b = events[i].b;
+    let event_c = events[i].c;
+
+    let hexCenterX = centerX + (3/2 * r) * event_a;
+    let hexCenterY = centerY + (sqrt3/2 * r) * event_a + (sqrt3 * r) * event_b;
+
+    let hex = generateHex(r, hexCenterX, hexCenterY, event_a, event_b, event_c); //adds geometry and placement related stuff only
+    
+    //detailed explanations are added from here.
+    hex.title = events[i].title;
+    hex.description = events[i].description;
+    hex.type = events[i].type;
+    hex.quest = events[i].quest; 
+    hex.qd = events[i].questDescription;
+    hex.npcs = events[i].npcs;
+    hex.tt = events[i].tiletype;
+    hex.abv = events[i].abv;
+
+    hexes.push(hex);
+  }
+
+  return hexes;
+}
+
+function generateHexMap(hexRadius, mapRadius, centerX, centerY){
+
+  const sqrt3 = Math.sqrt(3);
+
+  let r = hexRadius;
+  var hexes = [];
+
+  let i, j;
+  for(i = -mapRadius; i <= mapRadius; i++){ //x 
+    for(j = -mapRadius; j <= mapRadius; j ++){ //y
+
+      let a = i; 
+      let b = j; 
+      let c = 0 - i - j;      
+
+      if(c > mapRadius || c < -mapRadius ){
+        continue;
+      }
+
+      let hexCenterX = centerX + (3/2 * r) * i;
+      let hexCenterY = centerY + (sqrt3/2 * r) * i + (sqrt3 * r) * j;
+
+      let hex = generateHex(r, hexCenterX, hexCenterY, a,b,c);
+
+      hexes.push(hex);
+    }
+  }
+
+  return hexes;
+}
+
+function generateHex(r, x, y, a, b, c){
+
+  const sqrt3 = Math.sqrt(3);
+
+  let hex = [];
+  let vertices = [];
+
+  //flat top, clockworkwise 
+  vertices.push({x: r/2, y: sqrt3/2 * r });
+  vertices.push({x: r, y: 0 });
+  vertices.push({x: r/2, y: -sqrt3/2 * r });
+  vertices.push({x: -r/2, y: -sqrt3/2 * r });
+  vertices.push({x: -r, y: 0 });
+  vertices.push({x: -r/2, y: sqrt3/2 * r });
+
+  hex.x = x; //center position
+  hex.y = y; //center position
+
+  hex.a = a; //index
+  hex.b = b; //index
+  hex.c = c; //index
+
+  hex.points = vertices;
+
+  return hex;
+}
+
+function getTileColorStroke(d){
+
+  switch(d.tt){
+    default:
+      return "#0e1111"
+  }
+}
+
+function getTileColorFill(d){
+  switch(d.tt){
+    case "town":
+      return "#0093D1";
+    case "route":
+      return "#eeeeee";
+    case "city":
+      return "#006495";
+    case "poi":
+      return "#e62739";
+    default:
+      return "#000000"
+  }
+}
+
+</script>
+</body>
+</html>
