@@ -33,10 +33,10 @@
   var colWidth = parseFloat(eleStyle.width);
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = colWidth - margin.left - margin.right,
+    width = /*colWidth*/1920 - margin.left - margin.right,
     height = 800 - margin.top - margin.bottom;
 
-  var hexagon_diameter = 15;
+  var hexagon_diameter = 30;
 
   var gridHexes = generateHexMap(hexagon_diameter, 5, width/2, height/2);
 
@@ -67,11 +67,11 @@
     .attr("stroke-width", "1")
     .attr("fill", "#fefff2");
 
-  hexgrid
-    .append("text")
-    .append("tspan")
-    .attr("text-anchor", "middle")
-    .text(function(hex) {return hex.a + "," + hex.b + "," + hex.c ;});
+//  hexgrid
+//    .append("text")
+//    .append("tspan")
+//    .attr("text-anchor", "middle")
+//    .text(function(hex) {return hex.a + "," + hex.b + "," + hex.c ;});
 
     var div = d3
       .select("#info")
@@ -79,8 +79,6 @@
       .style("opacity", 0);
 
     var eventHexes = generateCrossedPaths(hexagon_diameter, width/2, height/2, events);
-
-    console.log(eventHexes);
 
     var eventgrid = svg
       .selectAll("g.grid")
