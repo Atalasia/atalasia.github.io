@@ -36,6 +36,9 @@
     height = 800 - margin.top - margin.bottom;
 
   var hexagon_diameter = 30;
+  if(colWidth <= 768){
+    hexagon_diameter = 20;
+  }
 
   var gridHexes = generateHexMap(hexagon_diameter, 5, width/2, height/2);
 
