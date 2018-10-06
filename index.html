@@ -33,11 +33,12 @@
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = colWidth - margin.left - margin.right,
-    height = 800 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
 
   var hexagon_diameter = 30;
   if(colWidth <= 768){
     hexagon_diameter = 20;
+    height = 400- margin.top - margin.bottom;
   }
 
   var gridHexes = generateHexMap(hexagon_diameter, 5, width/2, height/2);
