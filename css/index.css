@@ -9,9 +9,6 @@
 .map {
     width: 75%;
     float: left;
-    background-image:url("/img/back.jpg");
-    background-size: 20% 20%
-    background-repeat: repeat;
 }
 
 .col-1 {width: 8.33%;}
