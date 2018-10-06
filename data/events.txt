@@ -1,0 +1,1 @@
+a	b	c	title	desc	quest	quest_desc	npcs	tiletype	img_src
