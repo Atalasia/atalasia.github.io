@@ -2,13 +2,37 @@
     box-sizing: border-box;
 }
 
+
+h1 { 
+	color: darkgrey;
+	text-align: center;
+	margin: 40px 20px;
+	color: #282828;
+}
+
+footer { 
+	width: 100%;
+    display: block;
+    float: left;
+    text-align: center;
+    color: #7f7f7f;
+}
+
 .descbox {
     width: 25%;
     float: left;
+    background-color : white;
+    padding:15px;
 }
 .map {
     width: 75%;
     float: left;
+}
+
+.container {
+	/*background-image: url(/img/back.jpg);
+	background-repeat: repeat;
+	background-size: 350px 350px;*/
 }
 
 .col-1 {width: 8.33%;}
