@@ -37,7 +37,7 @@
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = colWidth - margin.left - margin.right,
-    height = 600 - margin.top - margin.bottom;
+    height = 680 - margin.top - margin.bottom;
 
   var hexagon_diameter = 30;
   if(colWidth <= 768){
@@ -116,7 +116,13 @@
         div.transition()    
           .duration(200)    
           .style("opacity", .9);    
-        div.html("(" + d.a + "," + d.b + "," + d.c + ")<br><br><b>" + d.title + "</b><br>" + d.description + "<br><br>" + d.quest + "<br>" + d.qd + "<br><br>" + d.npcs);
+        div.html(infoBoxTextGen(d));
+        svg.append("svg:image")
+          .attr("width", 500)
+          .attr("height", 500)
+          .attr("xlink:href", function(d) {
+            return "C:/Users/asus/Dropbox/Github/atalasia.github.io/img/test.jpg";
+          })
       })          
       .on("mouseout", function(d) {   
           div.transition()    

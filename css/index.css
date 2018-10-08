@@ -2,7 +2,6 @@
     box-sizing: border-box;
 }
 
-
 h1 { 
 	color: darkgrey;
 	text-align: center;
@@ -21,18 +20,20 @@ footer {
 .descbox {
     width: 25%;
     float: left;
-    background-color : white;
-    padding:15px;
+    background-color: white;
+    padding: 15px;
+    height: 760px;
 }
 .map {
     width: 75%;
     float: left;
+    /*background-image: url(C:/Users/asus/Dropbox/Github/atalasia.github.io/img/back.jpg);
+    background-repeat: repeat;
+    background-size: 350px 350px;*/
 }
 
 .container {
-	/*background-image: url(/img/back.jpg);
-	background-repeat: repeat;
-	background-size: 350px 350px;*/
+
 }
 
 .col-1 {width: 8.33%;}
