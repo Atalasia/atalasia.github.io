@@ -2,38 +2,23 @@
     box-sizing: border-box;
 }
 
-h1 { 
-	color: darkgrey;
-	text-align: center;
-	margin: 40px 20px;
-	color: #282828;
+body {
+    padding-right: 0px;
+    padding-left:  0px;
 }
 
-footer { 
-	width: 100%;
-    display: block;
+
+.map {
+    width: 100%;
+    height: 100%;
     float: left;
-    text-align: center;
-    color: #7f7f7f;
+    border: solid black 1px;
 }
 
 .descbox {
-    width: 25%;
-    float: left;
-    background-color: white;
-    padding: 15px;
-    height: 760px;
-}
-.map {
-    width: 75%;
-    float: left;
-    /*background-image: url(C:/Users/asus/Dropbox/Github/atalasia.github.io/img/back.jpg);
-    background-repeat: repeat;
-    background-size: 350px 350px;*/
-}
-
-.container {
-
+    width: 100%;
+    height: 200px;
+    overflow-y: scroll;
 }
 
 .col-1 {width: 8.33%;}
