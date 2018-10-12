@@ -10,13 +10,14 @@ body {
 
 .map {
     width: 100%;
-    height: 100%;
+    height: 70%;
     float: left;
 }
 
 .descbox {
     width: 100%;
-    height: 200px;
+    height: 30%;
+    float:left;
     overflow-y: scroll;
     max-height: 1000px;
 }
