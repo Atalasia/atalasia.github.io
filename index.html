@@ -29,9 +29,12 @@
   var eleStyle = window.getComputedStyle(ele);
   var colWidth = parseFloat(eleStyle.width);
 
+  var mapHeight = window.screen.height * 0.7;
+
+
   var margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = colWidth - margin.left - margin.right,
-    height = 680 - margin.top - margin.bottom;
+    height = mapHeight - margin.top - margin.bottom;
 
   var hexagon_diameter = 30;
   var diagram_length = 55;
