@@ -74,7 +74,8 @@
     .attr("fill", "#fcfcfc")
     .on("click", function(d) {
       if (typeof eventgrid !== 'undefined') {
-        eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});};
+        eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});
+      };
       hexgrid.selectAll("polygon").attr("stroke", function(dd){ return "#b0b0b0";});
       d3.select(this).attr("stroke", function(dd){ return "#ffffff" });
       div.transition()    
