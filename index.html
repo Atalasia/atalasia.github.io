@@ -15,7 +15,7 @@
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
-  
+
   var ele = document.getElementById("vis"); // Do not use #
   var eleStyle = window.getComputedStyle(ele);
   var colWidth = parseFloat(eleStyle.width);
@@ -86,7 +86,6 @@
   d3.json("/data/events.json", function(events){
 
     var eventHexes = generateCrossedPaths(hexagon_diameter, width/2, height/2, events);
-
     var eventgrid = svg
       .selectAll("g.grid")
       .data(eventHexes)
@@ -114,7 +113,7 @@
             .style("opacity", .9);    
           div.html(infoBoxTextGen(d));
       });
-  }
+  });
 
 function infoBoxTextGen(d){
 
