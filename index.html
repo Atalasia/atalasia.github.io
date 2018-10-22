@@ -83,7 +83,7 @@
       div.html( "(" + d.a + "," + d.b + "," + d.c + ")");
     });
 
-  d3.json("https://github.com/Atalasia/atalasia.github.io/tree/master/data/events.json", function(events){
+  d3.json("data/events.json", function(events){
 
     var eventHexes = generateCrossedPaths(hexagon_diameter, width/2, height/2, events);
     var eventgrid = svg
