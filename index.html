@@ -15,24 +15,12 @@
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
-
-  var events = [
-    {"a":12,"b": -5,"c":7,"title":"Goblin Attack","description":"The party faced a goblin party, which the party promptly wiped the floor with.","quest":"","questDescription":"","npcs":"", "tiletype":"route"},
-    {"a":1, "b": -1, "c":0,"title":"Dead Wife River","description":"On the route to Yellow City, party encountered a naked man carrying a drowned woman’s body, a broken raft carrying a man and four children, some screaming priests, and a half drowned woman on the river bank. They save the children, one of whom recites a bizarre nursery rhyme, and continue on their way.","quest":"","questDescription":"","npcs":"", "tiletype":"route"},
-    {"a":-9, "b":7, "c":2, "title":"Agoha", "description":"The town that the caravan visited before entering Yasha's Estate.","quest":"","questDescription":"","npcs":"", "tiletype":"town"},
-    {"a":-4, "b":2, "c":2, "title":"The Tower of Stargazer", "description":"Desolate observatory-tower surrounded by lightning from magical disturbance. The tower is fairly small. A mad and powerful wizard by the name of Calsidius resides in it to study different planets in different planes. The said wizard is currently locked up in a magic circle by his head servant. <br><br> B2 - there are treasure boxes bounded by Wall of Force and the Prismatic Wall. <br> B1 - A lab in which Calsidius used to perform necromantic studies. <br> 1 - Waiting room, guest room, entrance. <br> 2 - Servant's quarters, kitchen <br> 3 - The wizard's study. The magic circle in which the wizard is locked in is here.<br> 4 - Library floor. There is a refrigerator too. Ghost guards the path to library with more valueable books. <br> 5 - Observatory of astral planets. Bo, the bard, tragically died by activiating a telescope perfectly well and as a result being thrown into a planet in some other plane resulting in pink goo. He became the food of dancing mushrooms aliens.", "quest":"Find the Astral Book","questDescription":"Given by the Alliance. Book on surviving the astral travel is nicely needed. We found 3 of them, one on survivng, one on travelling, and one on the faunas of astral plane.", "npcs":"Uravillon Calsidius - The mad wizard, senile and mad from 59 years of isolation. He is one of the most powerful spellcasters in the world. <br>Argyle Timmons - Head servant, magic apprentice of Uravillon. Betrayed the wizard and trapped in a 9th level magic circle. Currently left the tower with Uravillon's spell book.", "tiletype":"poi"},
-    {"a":-4, "b":4, "c":0, "title":"The Yasha Estate", "description":"Peaceful and wealthy farming plantation estate. Extremely well kept and maintained. Grows lavender and wheat. Has 2 giant fireflies for farming.", "quest":"The Pact","questDescription":"Given By Gondrick. Seems like Yasha has struck a deal with a powerful spirit in a nearby swamp. Yasha for gaining nigh immortality and powers, offered his daughter to the spirit. That was 50 years ago. Gondrick has offered wealth and treasures if the daughter were to be alive and well in Yasha Estate after the month.","npcs":"Daisy - Passerby. Invited Teg to the Wild Rose Tea Shop.<br>Grenzel - Estate Guard<br>Yasha - Plantation Owner<br>Ravi - Firefly handler<br>Gondrick - Estate Guard Captain<br>The Daughter - Has been 10 year old for 50 years. Will be turning 13 upcoming month.", "tiletype":"town"},
-    {"a":-3, "b":4, "c":-1, "title":"Gurgari", "description":"A typical city in a 100 Kingdoms area. Well off and currently rising in power. Has a operation base of a pretty big smuggling ring called the Alliance and a cadre of high nobles titled Zamundar. The city is famous for jewelry, and crops. Six-story buildings, marble sculptures, nobles with face embedded with jewelry show that the kingdom is luxurious and vain. Although adorned in riches, the city is starting to show rot and tear in its society, but for a rising kingdom it seems off.<br><br>Temple of the Moth God - The temple of a god served by the people here. Well lit and well guarded.<br><br>", "quest":"","questDescription":"","npcs":"Sau Saj - Pigman Bard. Proficient in small hand percussion and mandolin.<br>Faizal - Ruler of the kingdom and a Zamundar. Obsessed with self adornment and beauty bordering on madness.<br>Fae - Faizal's daughter. A devout follower in the Cult of the Elephant Demon. ", "tiletype":"town"},
-    {"a":-2, "b":3, "c":-1, "title":"Path to the Swamp", "description":"On crossing a bridge over a dry gorge, the party faced a lizardfolk shaman who brought a number of skeletons. The lizardfolk was slain and properly cremated/salted.<br>There is a cave where rangers of Gurgari frequent. The party was attacked by rats while resting.", "quest":"","questDescription":"","npcs":"", "tiletype":"route"},
-    {"a":-1, "b":3, "c":-2, "title":"The Swamp", "description":"The swamp where the aligator spirit which made a pact with Yasha lives. Was in a deadlock between different entities over the control of the swamp.", "quest":"Ruler of the Swamp","questDescription":"The serpent wants to remove the aligator spirit, and the hags from the swamp to reclaim the whole of the swamp to himself.In addition, bringing something interesting to the serpent, and it will trade you with treasures","npcs":"The Ancient Serpent - Ancient snake creature<br>Agatha - Night Hag, leader of a coven of green hags. 2 Green hags were slain. She was taking part in controlling the dead gator god. Burned to crisp by Teg.<br>The Great Gator God - Wears medieval military formal attire, white khakis. Controls catfish. Has a penchant for using presidigitation as parlor tricks. Turns out, the gator god was long dead was impersonated by a hag and a catfish spirit.<br>Amos - Mercenary fighter. Limbs were amputated and was slain by the party.<br>Hirugar - Former Ranger. Met with a deity of a forest, became a new man.<br>Catfish Fiend - Took part in impersonation of the Gator God. Summons lightnings and gator things (undead or not) from varios places. Slain brutally by Marcus.", "tiletype":"poi"}
-  ];
-
+  
   var ele = document.getElementById("vis"); // Do not use #
   var eleStyle = window.getComputedStyle(ele);
   var colWidth = parseFloat(eleStyle.width);
 
   var mapHeight = window.screen.availHeight * 0.7;
-
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = colWidth - margin.left - margin.right,
@@ -84,24 +72,18 @@
     .attr("stroke", "#b0b0b0")
     .attr("stroke-width", "1")
     .attr("fill", "#fcfcfc")
-    .on("click", function(d) { 
+    .on("click", function(d) {
+      if (typeof eventgrid !== 'undefined') {
+        eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});};
+      hexgrid.selectAll("polygon").attr("stroke", function(dd){ return "#b0b0b0";});
+      d3.select(this).attr("stroke", function(dd){ return "#ffffff" });
       div.transition()    
         .duration(200)    
         .style("opacity", .9);    
       div.html( "(" + d.a + "," + d.b + "," + d.c + ")");
-    });/*          
-    .on("mouseout", function(d) {   
-        div.transition()    
-          .duration(500)    
-          .style("opacity", 0); 
     });
 
-    //Add read from here.
-
-    
-
-    */
-
+  d3.json("/data/events.json", function(events){
 
     var eventHexes = generateCrossedPaths(hexagon_diameter, width/2, height/2, events);
 
@@ -125,19 +107,21 @@
       .attr("fill", function(d){return getTileColorFill(d);})
       .on("click", function(d){
           eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});
+          hexgrid.selectAll("polygon").attr("stroke", function(dd){ return "#b0b0b0";});
           d3.select(this).attr("stroke", function(dd){ return "#ffffff" });
           div.transition()    
             .duration(200)    
             .style("opacity", .9);    
           div.html(infoBoxTextGen(d));
       });
+  }
 
 function infoBoxTextGen(d){
 
   let index = "(" + d.a + "," + d.b + "," + d.c + ")";
   let title = "<b>" + d.title + "</b>";
   
-  return index + "<br><br>" + title + "<br>" + d.description + "<br><br>" + d.quest + "<br>" + d.qd + "<br><br>" + d.npcs;
+  return index + "<br><br>" + title + "<br>" + d.description + "<br><br>" + d.npcs;
 }
 
 function generateCrossedPaths(hexRadius, centerX, centerY, events){
@@ -162,8 +146,6 @@ function generateCrossedPaths(hexRadius, centerX, centerY, events){
     hex.title = events[i].title;
     hex.description = events[i].description;
     hex.type = events[i].type;
-    hex.quest = events[i].quest; 
-    hex.qd = events[i].questDescription;
     hex.npcs = events[i].npcs;
     hex.tt = events[i].tiletype;
 
