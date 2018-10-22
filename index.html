@@ -83,7 +83,7 @@
       div.html( "(" + d.a + "," + d.b + "," + d.c + ")");
     });
 
-  d3.json("/data/events.json", function(events){
+  d3.json("data/events.json", function(events){
 
     var eventHexes = generateCrossedPaths(hexagon_diameter, width/2, height/2, events);
     var eventgrid = svg
@@ -115,125 +115,125 @@
       });
   });
 
-function infoBoxTextGen(d){
+  function infoBoxTextGen(d){
 
-  let index = "(" + d.a + "," + d.b + "," + d.c + ")";
-  let title = "<b>" + d.title + "</b>";
-  
-  return index + "<br><br>" + title + "<br>" + d.description + "<br><br>" + d.npcs;
-}
-
-function generateCrossedPaths(hexRadius, centerX, centerY, events){
-
-  const sqrt3 = Math.sqrt(3);
-
-  let r = hexRadius;
-  var hexes = [];
-
-  for(i in events){
-
-    let event_a = events[i].a;
-    let event_b = events[i].b;
-    let event_c = events[i].c;
-
-    let hexCenterX = centerX + (3/2 * r) * event_a;
-    let hexCenterY = centerY + (sqrt3/2 * r) * event_a + (sqrt3 * r) * event_b;
-
-    let hex = generateHex(r, hexCenterX, hexCenterY, event_a, event_b, event_c); //adds geometry and placement related stuff only
+    let index = "(" + d.a + "," + d.b + "," + d.c + ")";
+    let title = "<b>" + d.title + "</b>";
     
-    //detailed explanations are added from here.
-    hex.title = events[i].title;
-    hex.description = events[i].description;
-    hex.type = events[i].type;
-    hex.npcs = events[i].npcs;
-    hex.tt = events[i].tiletype;
-
-    hexes.push(hex);
+    return index + "<br><br>" + title + "<br>" + d.description + "<br><br>" + d.npcs;
   }
 
-  return hexes;
-}
+  function generateCrossedPaths(hexRadius, centerX, centerY, events){
 
-function generateHexMap(hexRadius, mapRadius, centerX, centerY){
+    const sqrt3 = Math.sqrt(3);
 
-  const sqrt3 = Math.sqrt(3);
+    let r = hexRadius;
+    var hexes = [];
 
-  let r = hexRadius;
-  var hexes = [];
+    for(i in events){
 
-  let i, j;
-  for(i = -mapRadius; i <= mapRadius; i++){ //x 
-    for(j = -mapRadius; j <= mapRadius; j ++){ //y
+      let event_a = events[i].a;
+      let event_b = events[i].b;
+      let event_c = events[i].c;
 
-      let a = i; 
-      let b = j; 
-      let c = 0 - i - j;      
+      let hexCenterX = centerX + (3/2 * r) * event_a;
+      let hexCenterY = centerY + (sqrt3/2 * r) * event_a + (sqrt3 * r) * event_b;
 
-      if(c > mapRadius || c < -mapRadius ){
-        continue;
-      }
-
-      let hexCenterX = centerX + (3/2 * r) * i;
-      let hexCenterY = centerY + (sqrt3/2 * r) * i + (sqrt3 * r) * j;
-
-      let hex = generateHex(r, hexCenterX, hexCenterY, a,b,c);
+      let hex = generateHex(r, hexCenterX, hexCenterY, event_a, event_b, event_c); //adds geometry and placement related stuff only
+      
+      //detailed explanations are added from here.
+      hex.title = events[i].title;
+      hex.description = events[i].description;
+      hex.type = events[i].type;
+      hex.npcs = events[i].npcs;
+      hex.tt = events[i].tiletype;
 
       hexes.push(hex);
     }
+
+    return hexes;
   }
 
-  return hexes;
-}
+  function generateHexMap(hexRadius, mapRadius, centerX, centerY){
 
-function generateHex(r, x, y, a, b, c){
+    const sqrt3 = Math.sqrt(3);
 
-  const sqrt3 = Math.sqrt(3);
+    let r = hexRadius;
+    var hexes = [];
 
-  let hex = [];
-  let vertices = [];
+    let i, j;
+    for(i = -mapRadius; i <= mapRadius; i++){ //x 
+      for(j = -mapRadius; j <= mapRadius; j ++){ //y
 
-  //flat top, clockworkwise 
-  vertices.push({x: r/2, y: sqrt3/2 * r });
-  vertices.push({x: r, y: 0 });
-  vertices.push({x: r/2, y: -sqrt3/2 * r });
-  vertices.push({x: -r/2, y: -sqrt3/2 * r });
-  vertices.push({x: -r, y: 0 });
-  vertices.push({x: -r/2, y: sqrt3/2 * r });
+        let a = i; 
+        let b = j; 
+        let c = 0 - i - j;      
 
-  hex.x = x; //center position
-  hex.y = y; //center position
+        if(c > mapRadius || c < -mapRadius ){
+          continue;
+        }
 
-  hex.a = a; //index
-  hex.b = b; //index
-  hex.c = c; //index
+        let hexCenterX = centerX + (3/2 * r) * i;
+        let hexCenterY = centerY + (sqrt3/2 * r) * i + (sqrt3 * r) * j;
 
-  hex.points = vertices;
+        let hex = generateHex(r, hexCenterX, hexCenterY, a,b,c);
 
-  return hex;
-}
+        hexes.push(hex);
+      }
+    }
 
-function getTileColorStroke(d){
-
-  switch(d.tt){
-    default:
-      return "#0e1111"
+    return hexes;
   }
-}
 
-function getTileColorFill(d){
-  switch(d.tt){
-    case "town":
-      return "#0093D1";
-    case "route":
-      return "#eeeeee";
-    case "city":
-      return "#006495";
-    case "poi":
-      return "#e62739";
-    default:
-      return "#000000"
+  function generateHex(r, x, y, a, b, c){
+
+    const sqrt3 = Math.sqrt(3);
+
+    let hex = [];
+    let vertices = [];
+
+    //flat top, clockworkwise 
+    vertices.push({x: r/2, y: sqrt3/2 * r });
+    vertices.push({x: r, y: 0 });
+    vertices.push({x: r/2, y: -sqrt3/2 * r });
+    vertices.push({x: -r/2, y: -sqrt3/2 * r });
+    vertices.push({x: -r, y: 0 });
+    vertices.push({x: -r/2, y: sqrt3/2 * r });
+
+    hex.x = x; //center position
+    hex.y = y; //center position
+
+    hex.a = a; //index
+    hex.b = b; //index
+    hex.c = c; //index
+
+    hex.points = vertices;
+
+    return hex;
   }
-}
+
+  function getTileColorStroke(d){
+
+    switch(d.tt){
+      default:
+        return "#0e1111"
+    }
+  }
+
+  function getTileColorFill(d){
+    switch(d.tt){
+      case "town":
+        return "#0093D1";
+      case "route":
+        return "#eeeeee";
+      case "city":
+        return "#006495";
+      case "poi":
+        return "#e62739";
+      default:
+        return "#000000"
+    }
+  }
 
 </script>
 </body>
