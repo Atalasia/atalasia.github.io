@@ -55,6 +55,6 @@ div #locationInfo {
     margin: auto; 
     padding: 20px;
     max-height: 0;
-    overflow: auto;
+    overflow-y: scroll;
     pointer-events: none;
 }
