@@ -9,8 +9,8 @@
   <div class="map">
     <div id="vis"></div>
   </div>
-  <div class="descbox">
-     <div id="info"></div>
+  <div id="textbox">
+    <div id="locationInfo"></div>
   </div>
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
@@ -18,11 +18,11 @@
 
   var ele = document.getElementById("vis"); // Do not use #
   var eleStyle = window.getComputedStyle(ele);
+  
   var colWidth = parseFloat(eleStyle.width);
+  var mapHeight = window.screen.availHeight;
 
-  var mapHeight = window.screen.availHeight * 0.7;
-
-  var margin = {top: 10, right: 10, bottom: 10, left: 10},
+  var margin = {top: 0, right: 0, bottom: 0, left: 0},
     width = colWidth - margin.left - margin.right,
     height = mapHeight - margin.top - margin.bottom;
 
@@ -34,59 +34,31 @@
     height = 400- margin.top - margin.bottom;
   }
 
-  var gridHexes = generateHexMap(hexagon_diameter, diagram_length, width/2, height/2);
+  var cv = d3.select("#vis")
+    .append("canvas").attr("id","canvas")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
 
-  var div = d3
-    .select("#info")
-    .attr("class", "tooltip")       
-    .style("opacity", 0);
+  var context = cv.node().getContext("2d");
+  paintHexMap(hexagon_diameter, diagram_length, width/2, height/2, context);
 
-  var svg = d3
-    .select("#vis")
+  var svg = d3.select("#vis")
     .append("svg")
+    .attr('class', 'overlay')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .call(d3.zoom()
         .scaleExtent([1/2, 4])
-        .on('zoom', function (){
-            svg.attr("transform", d3.event.transform)
-    }))
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .on('zoom', syncedZoom))
+    .append("g");
 
-  var hexgrid = svg
-    .selectAll("g.grid")
-    .data(gridHexes)
-    .enter()
-    .append("g")
-    .attr("transform", function(hex) {
-      return "translate(" + hex.x + "," + hex.y + ")";
-    });
 
-  hexgrid
-    .append("polygon")
-    .attr("points", function(hex) { 
-      return hex.points.map(function(d){ 
-        return [d.x,d.y].join(",");}).join(" ");
-    })
-    .attr("stroke", "#b0b0b0")
-    .attr("stroke-width", "1")
-    .attr("fill", "#fcfcfc")
-    .on("click", function(d) {
-      if (typeof eventgrid !== 'undefined') {
-        eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});
-      };
-      hexgrid.selectAll("polygon").attr("stroke", function(dd){ return "#b0b0b0";});
-      d3.select(this).attr("stroke", function(dd){ return "#ffffff" });
-      div.transition()    
-        .duration(200)    
-        .style("opacity", .9);    
-      div.html( "(" + d.a + "," + d.b + "," + d.c + ")");
-    });
+  let textbox = d3.select("#textbox").style("opacity","0");
+  let infotext = d3.select("#locationInfo").style("opacity","0");
 
   d3.json("data/events.json", function(events){
-
-    var eventHexes = generateCrossedPaths(hexagon_diameter, width/2, height/2, events);
+    
+    var eventHexes = addEventDoms(hexagon_diameter, width/2, height/2, events);
     var eventgrid = svg
       .selectAll("g.grid")
       .data(eventHexes)
@@ -105,26 +77,48 @@
       .attr("stroke", function(d){return getTileColorStroke(d);})
       .attr("stroke-width", "2")
       .attr("fill", function(d){return getTileColorFill(d);})
-      .on("click", function(d){
+      .on("mouseover", function(d) {
           eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});
-          hexgrid.selectAll("polygon").attr("stroke", function(dd){ return "#b0b0b0";});
           d3.select(this).attr("stroke", function(dd){ return "#ffffff" });
-          div.transition()    
-            .duration(200)    
-            .style("opacity", .9);    
-          div.html(infoBoxTextGen(d));
+          textbox.style("opacity", 0.9);
+          textbox.style("height","80%");
+          infotext.style("opacity", 0.9);
+          infotext.style("max-height","70%");
+          infotext.html(infoBoxTextGen(d));
+      })
+      .on("mouseout", function(d) {
+          eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});
+          textbox.style("opacity", 0);
+          textbox.style("height", 0);
+          infotext.style("opacity", 0);
+          infotext.style("max-height",0);
       });
+
   });
+  
+  function syncedZoom(){
+    //zoom & pan SVG 
+    svg.attr("transform", d3.event.transform)
+    //zoom & pan Canvas -- copied from Mike Bostock's code (https://bl.ocks.org/mbostock/3680958)
+    var transform = d3.event.transform;
+    context.save();
+    context.clearRect(0, 0, colWidth, mapHeight);
+    context.translate(transform.x, transform.y);
+    context.scale(transform.k, transform.k);
+    paintHexMap(hexagon_diameter, diagram_length, width/2, height/2, context);
+    context.restore();
+  }
 
   function infoBoxTextGen(d){
 
+    
     let index = "(" + d.a + "," + d.b + "," + d.c + ")";
     let title = "<b>" + d.title + "</b>";
-    
+
     return index + "<br><br>" + title + "<br>" + d.description + "<br><br>" + d.npcs;
   }
 
-  function generateCrossedPaths(hexRadius, centerX, centerY, events){
+  function addEventDoms(hexRadius, centerX, centerY, events){
 
     const sqrt3 = Math.sqrt(3);
 
@@ -140,7 +134,7 @@
       let hexCenterX = centerX + (3/2 * r) * event_a;
       let hexCenterY = centerY + (sqrt3/2 * r) * event_a + (sqrt3 * r) * event_b;
 
-      let hex = generateHex(r, hexCenterX, hexCenterY, event_a, event_b, event_c); //adds geometry and placement related stuff only
+      let hex = makeHexDom(r, hexCenterX, hexCenterY, event_a, event_b, event_c); //adds geometry and placement related stuff only
       
       //detailed explanations are added from here.
       hex.title = events[i].title;
@@ -155,12 +149,11 @@
     return hexes;
   }
 
-  function generateHexMap(hexRadius, mapRadius, centerX, centerY){
+  function paintHexMap(hexRadius, mapRadius, centerX, centerY, ctx){
 
     const sqrt3 = Math.sqrt(3);
 
     let r = hexRadius;
-    var hexes = [];
 
     let i, j;
     for(i = -mapRadius; i <= mapRadius; i++){ //x 
@@ -174,19 +167,25 @@
           continue;
         }
 
-        let hexCenterX = centerX + (3/2 * r) * i;
-        let hexCenterY = centerY + (sqrt3/2 * r) * i + (sqrt3 * r) * j;
+        let hcx = centerX + (3/2 * r) * i;
+        let hcy = centerY + (sqrt3/2 * r) * i + (sqrt3 * r) * j;
 
-        let hex = generateHex(r, hexCenterX, hexCenterY, a,b,c);
-
-        hexes.push(hex);
+        ctx.beginPath();
+        ctx.moveTo(r/2 + hcx, (sqrt3/2 * r) + hcy);
+        ctx.lineTo(r + hcx, hcy);
+        ctx.lineTo(r/2 + hcx, (-sqrt3/2 * r) + hcy);
+        ctx.lineTo((-r/2) + hcx, (-sqrt3/2 * r) + hcy);
+        ctx.lineTo((-r) + hcx, hcy);
+        ctx.lineTo((-r/2) + hcx, (sqrt3/2 * r) + hcy);
+        ctx.lineTo(r/2 + hcx, (sqrt3/2 * r) + hcy);
+        ctx.strokeStyle = '#D3D3D3';
+        ctx.stroke();
+  
       }
     }
-
-    return hexes;
   }
 
-  function generateHex(r, x, y, a, b, c){
+  function makeHexDom(r, x, y, a, b, c){
 
     const sqrt3 = Math.sqrt(3);
 
@@ -235,7 +234,6 @@
         return "#000000"
     }
   }
-
 </script>
 </body>
 </html>
