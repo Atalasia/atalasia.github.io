@@ -56,11 +56,6 @@
   let textbox = d3.select("#textbox").style("opacity","0");
   let infotext = d3.select("#locationInfo").style("opacity","0");
 
-  var innerSvg = d3.select("#textbox")
-      .append("svg")
-      .attr("width", innerHeight)
-      .attr("height", innerWidth);
-
   d3.json("data/events.json", function(events){
 
     var eventHexes = addEventDoms(hexagon_diameter, width/2, height/2, events);
@@ -116,6 +111,12 @@
 
     let innerHeight = 300;
     let innerWidth = 300;
+
+    var innerSvg = d3.select("#textbox")
+      .append("svg")
+      .attr("width", innerHeight)
+      .attr("height", innerWidth);
+
 
     d3.json("data/yellowcity.json", function(city){
 
