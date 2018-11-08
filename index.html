@@ -59,7 +59,7 @@
   var innerSvg = d3.select("#textbox")
       .append("svg")
       .attr("width", innerHeight)
-      .attr("height", innerWidth)
+      .attr("height", innerWidth);
 
   d3.json("data/events.json", function(events){
 
@@ -116,8 +116,6 @@
 
     let innerHeight = 300;
     let innerWidth = 300;
-
-
 
     d3.json("data/yellowcity.json", function(city){
 
