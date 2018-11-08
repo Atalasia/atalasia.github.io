@@ -131,15 +131,16 @@
 
       innerGrid
             .append("polygon")
-            .attr("points", function(hex) { 
+            .attr("points", function(hex){ 
               return hex.points.map(function(d){ 
-                return [d.x,d.y].join(",");}).join(" ");
+                return [d.x,d.y].join(",");
+              }).join(" ");
             })
             .attr("stroke", function(d){return getTileColorStroke(d);})
             .attr("stroke-width", "2")
-            .attr("fill", function(d){return getTileColorFill(d);});
-    }
-  }
+            .attr("fill", function(d){return getTileColorFill(d);}); 
+   }
+
 
   function syncedZoom(){
     //zoom & pan SVG 
