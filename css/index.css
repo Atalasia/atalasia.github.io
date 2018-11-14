@@ -22,11 +22,17 @@ canvas {
     z-index: 1;
 }
 
-svg {
+svg.overlay {
     position:absolute;
     left: 0px; 
     top:0px;
     z-index: 1;
+}
+
+svg #innermap{
+    position:absolute;
+    margin: auto;
+    z-index: 2;
 }
 
 div #textbox{
@@ -40,19 +46,18 @@ div #textbox{
     width: 100%;
     background-color: white;
     border: 2px solid #888;
-
+    overflow-y: scroll;
 }
 
+div #localmap{
+    text-align: center;
+    margin: auto;
+}
 
 div #locationInfo {
-    position: absolute;
     z-index: 2;
-    left: 0px; 
-    top: 0px;
-    height: 100%;
     width: 100%;
     margin: auto; 
     padding: 20px;
     max-height: 0;
-    overflow-y: scroll;
 }

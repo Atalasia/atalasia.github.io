@@ -10,6 +10,7 @@
     <div id="vis"></div>
   </div>
   <div id="textbox">
+    <div id="localmap"></div>
     <div id="locationInfo"></div>
   </div>
 </div>
@@ -45,6 +46,7 @@
   var svg = d3.select("#vis")
     .append("svg")
     .attr('class', 'overlay')
+    .attr('id','worldmap-overlay')
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .call(d3.zoom()
@@ -88,12 +90,11 @@
               infotext.style("opacity", 0);
               infotext.style("max-height",0);
               infoOn = false;
-
-              if(d.a == 21){
-                makeCityInteriorHexes();
+              
+              if(d.a == 21 || d.a == 20){
+                d3.select("#innermap").remove();
               }
 
-              makeCityInteriorHexes();
           } else {
               eventgrid.selectAll("polygon").attr("stroke", function(dd){ return getTileColorStroke(d);});
               d3.select(this).attr("stroke", function(dd){ return "#ffffff" });
@@ -103,46 +104,53 @@
               infotext.style("max-height","100%");
               infotext.html(infoBoxTextGen(d));
               infoOn = true;
+              
+              if(d.a == 21 || d.a == 20){
+
+                  var innerSvg = d3.select("#localmap")
+                                    .append("svg")
+                                    .attr("width", "100%")
+                                    .attr("height", "80%")
+                                    .attr("id", "innermap");
+
+                  let inWidth = document.getElementById("localmap").clientWidth;
+                  let inHeight = document.getElementById("localmap").clientHeight;
+
+                  d3.json("data/yellowcity.json", function(city){
+
+                    let innerHexes = addEventDoms(50, inWidth/2, inHeight/2, city);
+                    var innerGrid = innerSvg
+                          .selectAll("g.grid")
+                          .data(innerHexes)
+                          .enter()
+                          .append("g")
+                          .attr("transform", function(hex) {
+                            return "translate(" + hex.x + "," + hex.y + ")";
+                          });
+
+                    innerGrid
+                          .append("polygon")
+                          .attr("points", function(hex){ 
+                            return hex.points.map(function(d){ 
+                              return [d.x,d.y].join(",");
+                            }).join(" ");
+                          })
+                          .attr("stroke", "black")
+                          .attr("stroke-width", "0.5")
+                          .attr("fill", "#F8F8FF"); 
+
+                    innerGrid
+                          .append("text")
+                          .append("tspan")
+                          .attr("text-anchor", "middle")
+                          .attr("font-size", "12px")
+                          .text(function(hex) {return hex.title ;});
+                  });                    
+
+              }
           }
       });
-  });
-
-  function makeCityInteriorHexes(){
-
-    let innerHeight = 300;
-    let innerWidth = 300;
-
-    var innerSvg = d3.select("#textbox")
-      .append("svg")
-      .attr("width", innerHeight)
-      .attr("height", innerWidth);
-
-
-    d3.json("data/yellowcity.json", function(city){
-
-      let innerHexes = addEventDoms(5, 150, 150, city);
-      var innerGrid = innerSvg
-            .selectAll("g.grid")
-            .data(innerHexes)
-            .enter()
-            .append("g")
-            .attr("transform", function(hex) {
-              return "translate(" + hex.x + "," + hex.y + ")";
-            });
-
-      innerGrid
-            .append("polygon")
-            .attr("points", function(hex){ 
-              return hex.points.map(function(d){ 
-                return [d.x,d.y].join(",");
-              }).join(" ");
-            })
-            .attr("stroke", function(d){return getTileColorStroke(d);})
-            .attr("stroke-width", "2")
-            .attr("fill", function(d){return getTileColorFill(d);}); 
    });
- }
-
 
   function syncedZoom(){
     //zoom & pan SVG 

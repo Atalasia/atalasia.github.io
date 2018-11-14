@@ -1,3 +1,21 @@
 [
-    {"a":1, "b": -1, "c":0,"title":"Test","description":"test","npcs":"", "tiletype":"route"},
+  {"a":0, "b": 0, "c":0,"title":"Town Center"},
+  {"a":0, "b": 1, "c":-1,"title":"West Docks"},
+  {"a":0, "b": -1, "c":1,"title":"New Town"},
+  {"a":1, "b": -1, "c":0,"title":"Arcane District"},
+  {"a":1, "b": 0, "c":-1,"title":"Market"},
+  {"a":-1, "b": 0, "c":1,"title":"Warehouse, Gate"},
+  {"a":-1, "b": 1, "c":-0,"title":"Craft Quarters"},
+  //{"a":0, "b": 2, "c":-2,"title":"7"},
+  {"a":0, "b": -2, "c":2,"title":""},
+  {"a":1, "b": 1, "c":-2,"title":"Palace"},
+  {"a":1, "b": -2, "c":1,"title":""},
+  {"a":2, "b": 0, "c":-2,"title":"East Docks"},
+  {"a":2, "b": -1, "c":-1,"title":"Old Temple"},
+  {"a":2, "b": -2, "c":0,"title":""},
+  {"a":-2, "b": 0, "c":2,"title":"Old Edge"},
+  {"a":-2, "b": 1, "c":1,"title":""},
+  {"a":-2, "b": 2, "c":0,"title":"Farms"},
+  {"a":-1, "b": -1, "c":2,"title":""},
+  //{"a":-1, "b": 2, "c":-1,"title":"18"} 
 ]
