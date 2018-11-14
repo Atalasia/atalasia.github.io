@@ -55,6 +55,7 @@
     .append("g");
 
 
+  let yc_json = "";
   let textbox = d3.select("#textbox").style("opacity","0");
   let infotext = d3.select("#locationInfo").style("opacity","0");
 
@@ -116,7 +117,29 @@
                   let inWidth = document.getElementById("localmap").clientWidth;
                   let inHeight = document.getElementById("localmap").clientHeight;
 
-                  d3.json("data/yellowcity.json", function(city){
+                  //d3.json("data/yellowcity.json", function(city){
+
+                    let city = [
+                                {"a":0, "b": 0, "c":0,"title":"Town Center"},
+                                {"a":0, "b": 1, "c":-1,"title":"West Docks"},
+                                {"a":0, "b": -1, "c":1,"title":"New Town"},
+                                {"a":1, "b": -1, "c":0,"title":"Arcane District"},
+                                {"a":1, "b": 0, "c":-1,"title":"Market"},
+                                {"a":-1, "b": 0, "c":1,"title":"Warehouse, Gate"},
+                                {"a":-1, "b": 1, "c":-0,"title":"Craft Quarters"},
+                                //{"a":0, "b": 2, "c":-2,"title":"7"},
+                                {"a":0, "b": -2, "c":2,"title":""},
+                                {"a":1, "b": 1, "c":-2,"title":"Palace"},
+                                {"a":1, "b": -2, "c":1,"title":""},
+                                {"a":2, "b": 0, "c":-2,"title":"East Docks"},
+                                {"a":2, "b": -1, "c":-1,"title":"Old Temple"},
+                                {"a":2, "b": -2, "c":0,"title":""},
+                                {"a":-2, "b": 0, "c":2,"title":"Old Edge"},
+                                {"a":-2, "b": 1, "c":1,"title":""},
+                                {"a":-2, "b": 2, "c":0,"title":"Farms"},
+                                {"a":-1, "b": -1, "c":2,"title":""}
+                                //{"a":-1, "b": 2, "c":-1,"title":"18"} 
+                              ];
 
                     let innerHexes = addEventDoms(50, inWidth/2, inHeight/2, city);
                     var innerGrid = innerSvg
@@ -145,7 +168,7 @@
                           .attr("text-anchor", "middle")
                           .attr("font-size", "12px")
                           .text(function(hex) {return hex.title ;});
-                  });                    
+                  //});                    
               }
           }
       });
