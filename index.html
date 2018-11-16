@@ -92,7 +92,7 @@
               infotext.style("max-height",0);
               infoOn = false;
               
-              if(d.a == 21 || d.a == 20){
+              if(d.a == 21 && d.b == -10 || d.a == 20 && d.b == -9 || d.a == 21 && d.b == -9){
                 d3.select("#innermap").remove();
               }
 
@@ -106,7 +106,7 @@
               infotext.html(infoBoxTextGen(d));
               infoOn = true;
               
-              if(d.a == 21 || d.a == 20){
+              if(d.a == 21 && d.b == -10 || d.a == 20 && d.b == -9 || d.a == 21 && d.b == -9){
 
                   var innerSvg = d3.select("#localmap")
                                     .append("svg")
@@ -141,7 +141,7 @@
                                 //{"a":-1, "b": 2, "c":-1,"title":"18"} 
                               ];
 
-                    let innerHexes = addEventDoms(50, inWidth/2, inHeight/2, city);
+                    let innerHexes = addEventDoms(inWidth/32, inWidth/2, inHeight/2, city);
                     var innerGrid = innerSvg
                           .selectAll("g.grid")
                           .data(innerHexes)
