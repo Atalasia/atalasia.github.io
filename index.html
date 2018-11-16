@@ -140,8 +140,12 @@
                                 {"a":-1, "b": -1, "c":2,"title":""}
                                 //{"a":-1, "b": 2, "c":-1,"title":"18"} 
                               ];
+                    let inHexSize = inWidth/16;
+                    if(colWidth <= 768){
+                      let inHexSize = inWidth/8;
+                    }
 
-                    let innerHexes = addEventDoms(inWidth/32, inWidth/2, inHeight/2, city);
+                    let innerHexes = addEventDoms(inHexSize, inWidth/2, inHeight/2, city);
                     var innerGrid = innerSvg
                           .selectAll("g.grid")
                           .data(innerHexes)
